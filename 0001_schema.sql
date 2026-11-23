@@ -1,0 +1,15 @@
+PRAGMA foreign_keys=ON;
+CREATE TABLE IF NOT EXISTS branches(id TEXT PRIMARY KEY,name TEXT NOT NULL);
+INSERT OR IGNORE INTO branches VALUES ('najjera','Christ Way Church Najjera'),('bulindo','Christ Way Church Bulindo'),('kyanjanja','Christ Way Church Kyanjanja');
+CREATE TABLE IF NOT EXISTS users(id TEXT PRIMARY KEY,email TEXT UNIQUE NOT NULL,name TEXT NOT NULL,role TEXT NOT NULL,pass_salt TEXT NOT NULL,pass_hash TEXT NOT NULL,active INTEGER NOT NULL DEFAULT 1);
+CREATE TABLE IF NOT EXISTS user_branches(user_id TEXT NOT NULL,branch_id TEXT NOT NULL,PRIMARY KEY(user_id,branch_id),FOREIGN KEY(user_id) REFERENCES users(id),FOREIGN KEY(branch_id) REFERENCES branches(id));
+CREATE TABLE IF NOT EXISTS sessions(token_hash TEXT PRIMARY KEY,user_id TEXT NOT NULL,expires_at INTEGER NOT NULL,FOREIGN KEY(user_id) REFERENCES users(id));
+CREATE TABLE IF NOT EXISTS members(id TEXT PRIMARY KEY,branch_id TEXT NOT NULL,first_name TEXT NOT NULL,last_name TEXT NOT NULL,phone TEXT,email TEXT,gender TEXT,birth_date TEXT,address TEXT,status TEXT DEFAULT 'Active',joined_at TEXT,notes TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS attendance(id TEXT PRIMARY KEY,branch_id TEXT NOT NULL,person_name TEXT NOT NULL,member_id TEXT,service_date TEXT NOT NULL,service_name TEXT,notes TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS visitors(id TEXT PRIMARY KEY,branch_id TEXT NOT NULL,name TEXT NOT NULL,phone TEXT,visit_date TEXT,follow_up TEXT,assigned_to TEXT,status TEXT DEFAULT 'New',notes TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS mcs(id TEXT PRIMARY KEY,branch_id TEXT NOT NULL,name TEXT NOT NULL,leader TEXT,meeting_day TEXT,location TEXT,notes TEXT);
+CREATE TABLE IF NOT EXISTS ministries(id TEXT PRIMARY KEY,branch_id TEXT NOT NULL,name TEXT NOT NULL,leader TEXT,description TEXT);
+CREATE TABLE IF NOT EXISTS events(id TEXT PRIMARY KEY,branch_id TEXT NOT NULL,name TEXT NOT NULL,event_date TEXT,location TEXT,description TEXT);
+CREATE TABLE IF NOT EXISTS finance(id TEXT PRIMARY KEY,branch_id TEXT NOT NULL,record_type TEXT NOT NULL,amount REAL NOT NULL,record_date TEXT NOT NULL,category TEXT,description TEXT,recorded_by TEXT);
+CREATE TABLE IF NOT EXISTS pastoral(id TEXT PRIMARY KEY,branch_id TEXT NOT NULL,person_name TEXT NOT NULL,care_type TEXT,care_date TEXT,assigned_to TEXT,notes TEXT,restricted INTEGER DEFAULT 1);
+CREATE TABLE IF NOT EXISTS audit(id TEXT PRIMARY KEY,user_id TEXT,action TEXT,entity TEXT,entity_id TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
